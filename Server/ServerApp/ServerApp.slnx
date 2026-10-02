@@ -1,3 +1,6 @@
 <Solution>
+  <Project Path="../Factorio.Application/Factorio.Application.csproj" />
+  <Project Path="../Factorio.Domain/Factorio.Domain.csproj" />
+  <Project Path="../Factorio.Infrastructure/Factorio.Infrastructure.csproj" />
   <Project Path="ServerApp.csproj" />
 </Solution>

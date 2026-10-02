@@ -365,3 +365,10 @@ FodyWeavers.xsd
 
 appsettings.json
 ClientApp/android/
+*.db
+*.db-shm
+*.db-wal
+
+*.db
+*.db-shm
+*.db-wal
