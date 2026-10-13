@@ -19,6 +19,7 @@ builder.Services.AddInfrastructure(connectionString);
 // Application layer: use cases
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ItemService>();
+builder.Services.AddScoped<LocaleImportService>();
 builder.Services.AddScoped<ActionService>();
 builder.Services.AddScoped<AuthService>();
 
@@ -113,6 +114,21 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// One-off command: dotnet run --project Server/ServerApp -- import-locale "<path to base.cfg>"
+if (args.Length >= 2 && args[0] == "import-locale")
+{
+    using var scope = app.Services.CreateScope();
+    var importer = scope.ServiceProvider.GetRequiredService<LocaleImportService>();
+    var result = await importer.ImportAsync(await File.ReadAllLinesAsync(args[1]));
+
+    Console.WriteLine($"Items checked:      {result.Checked}");
+    Console.WriteLine($"Names updated:      {result.NamesUpdated}");
+    Console.WriteLine($"Descriptions added: {result.DescriptionsSet}");
+    Console.WriteLine($"No name in locale:  {result.NotFound.Count}");
+    foreach (var key in result.NotFound.Take(30)) Console.WriteLine($"  - {key}");
+    return;
+}
 
 app.Run();
 

@@ -19,6 +19,7 @@ public static class DependencyInjection
         services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IItemRepository, ItemRepository>();
+        services.AddScoped<IItemLocaleRepository, ItemLocaleRepository>();
         services.AddScoped<IActionRepository, ActionRepository>();
 
         return services;
