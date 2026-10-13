@@ -18,6 +18,9 @@ public class UserRepository(AppDbContext db) : IUserRepository
         db.Users.AnyAsync(u => u.Email.ToLower() == normalizedEmail
                                && (excludeId == null || u.Id != excludeId.Value));
 
+    public Task<User?> GetByEmailAsync(string normalizedEmail) =>
+        db.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == normalizedEmail);
+
     public async Task AddAsync(User user)
     {
         db.Users.Add(user);
@@ -32,3 +35,4 @@ public class UserRepository(AppDbContext db) : IUserRepository
         await db.SaveChangesAsync();
     }
 }
+

@@ -4,12 +4,9 @@ using Factorio.Domain.Enums;
 
 namespace ServerApp.Api;
 
-/// <summary>Body of POST /api/actions.</summary>
+/// <summary>Body of POST /api/actions. The user is taken from the access token.</summary>
 public class CreateActionRequest
 {
-    [Required, Range(1, int.MaxValue)]
-    public int? UserId { get; set; }
-
     [Required, Range(1, int.MaxValue)]
     public int? ItemId { get; set; }
 

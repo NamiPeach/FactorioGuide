@@ -1,4 +1,4 @@
-using Factorio.Application.Abstractions;
+﻿using Factorio.Application.Abstractions;
 using Factorio.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +7,7 @@ using ServerApp.Models;
 namespace ServerApp.Controllers;
 
 /// <summary>Admin panel login: GET /auth/login shows the form, POST /auth/login issues the JWT.</summary>
+[ApiExplorerSettings(IgnoreApi = true)]
 [Route("auth")]
 public class AuthController : Controller
 {

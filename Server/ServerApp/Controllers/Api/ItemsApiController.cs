@@ -8,7 +8,7 @@ namespace ServerApp.Controllers.Api;
 /// <summary>REST API: read-only access to items.</summary>
 [ApiController]
 [Route("api/items")]
-[Authorize]
+[Authorize(Roles = AuthService.UserRole)]
 public class ItemsApiController(ItemService items) : ControllerBase
 {
     /// <summary>List of items, optionally filtered by name or category.</summary>
@@ -36,3 +36,4 @@ public class ItemsApiController(ItemService items) : ControllerBase
         new(i.Id, i.InternalName, i.Name, i.Category, i.Description,
             i.StackSize, i.CraftTime, i.ProductAmount);
 }
+

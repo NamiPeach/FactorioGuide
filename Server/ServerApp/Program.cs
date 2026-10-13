@@ -20,6 +20,7 @@ builder.Services.AddInfrastructure(connectionString);
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ItemService>();
 builder.Services.AddScoped<ActionService>();
+builder.Services.AddScoped<AuthService>();
 
 // JWT settings: Key, Issuer, Audience
 var jwtSection = builder.Configuration.GetSection(JwtSettings.SectionName);
@@ -51,7 +52,7 @@ builder.Services
                 // The admin panel (browser) keeps the token in a cookie.
                 // If there is no cookie, the Authorization header is used (API clients, Postman).
                 var cookieToken = context.Request.Cookies["access_token"];
-                if (!string.IsNullOrEmpty(cookieToken))
+                if (!string.IsNullOrEmpty(cookieToken) && string.IsNullOrEmpty(context.Request.Headers.Authorization))
                 {
                     context.Token = cookieToken;
                 }
@@ -76,18 +77,34 @@ builder.Services
 builder.Services.AddAuthorization();
 
 // MVC: controllers and Razor views (admin panel)
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter()));
 
 // Swagger: API documentation and a test page at /swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    // The "Authorize" button in Swagger UI: paste the token from POST /api/auth/login
+    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.OpenApiSecurityScheme
+    {
+        Type = Microsoft.OpenApi.SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "Paste the token from POST /api/auth/login (without the word Bearer)."
+    });
+
+    options.AddSecurityRequirement(document => new Microsoft.OpenApi.OpenApiSecurityRequirement
+    {
+        [new Microsoft.OpenApi.OpenApiSecuritySchemeReference("Bearer", document)] = []
+    });
+});
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options => options.EnablePersistAuthorization());
 }
 
 app.UseAuthentication();
@@ -98,4 +115,9 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+
+
+
+
 
