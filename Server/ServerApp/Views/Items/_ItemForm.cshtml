@@ -1,0 +1,54 @@
+﻿@model ItemFormModel
+
+<div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+<input type="hidden" asp-for="Id" />
+
+<div class="row g-3 mb-3">
+    <div class="col-md-6">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="InternalName" class="form-label"></label>
+        <input asp-for="InternalName" class="form-control" placeholder="electronic-circuit" />
+        <span asp-validation-for="InternalName" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Category" class="form-label"></label>
+        <select asp-for="Category" asp-items="Model.CategoryOptions" class="form-select"><option value="">(none)</option></select>
+        <span asp-validation-for="Category" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="UserId" class="form-label"></label>
+        <select asp-for="UserId" asp-items="Model.UserOptions" class="form-select">
+            <option value="">(none)</option>
+        </select>
+        <span asp-validation-for="UserId" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="StackSize" class="form-label"></label>
+        <input asp-for="StackSize" type="number" min="1" class="form-control" />
+        <span asp-validation-for="StackSize" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="CraftTime" class="form-label"></label>
+        <input asp-for="CraftTime" type="number" step="any" min="0" class="form-control" />
+        <span asp-validation-for="CraftTime" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="ProductAmount" class="form-label"></label>
+        <input asp-for="ProductAmount" type="number" min="1" class="form-control" />
+        <span asp-validation-for="ProductAmount" class="text-danger"></span>
+    </div>
+    <div class="col-12">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" rows="3" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="col-12">
+        <label asp-for="Stats" class="form-label"></label>
+        <textarea asp-for="Stats" rows="3" class="form-control font-monospace"></textarea>
+        <span asp-validation-for="Stats" class="text-danger"></span>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+﻿@model Factorio.Domain.Entities.Item
+@{
+    ViewData["Title"] = "Delete item";
+}
+<h1 class="h3 mb-3">Delete item</h1>
+
+<div class="alert alert-warning">
+    Delete <strong>@Model.Name</strong> (<code>@Model.InternalName</code>)? This cannot be undone.
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+</form>

@@ -5,6 +5,9 @@ using Factorio.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
+// Numbers like 0.5 must bind the same on any PC (a uk-UA Windows expects a comma)
+System.Globalization.CultureInfo.DefaultThreadCurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Connection string comes from appsettings.json (not committed to git, see appsettings.Example.json)
@@ -15,6 +18,7 @@ builder.Services.AddInfrastructure(connectionString);
 
 // Application layer: use cases
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<ItemService>();
 
 // JWT settings: Key, Issuer, Audience
 var jwtSection = builder.Configuration.GetSection(JwtSettings.SectionName);

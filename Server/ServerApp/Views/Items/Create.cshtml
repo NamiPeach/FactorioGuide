@@ -1,0 +1,11 @@
+﻿@model ItemFormModel
+@{
+    ViewData["Title"] = "Create item";
+}
+<h1 class="h3 mb-3">Create item</h1>
+
+<form asp-action="Create" method="post">
+    <partial name="_ItemForm" model="Model" />
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+</form>
