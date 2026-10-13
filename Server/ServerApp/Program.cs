@@ -78,7 +78,17 @@ builder.Services.AddAuthorization();
 // MVC: controllers and Razor views (admin panel)
 builder.Services.AddControllersWithViews();
 
+// Swagger: API documentation and a test page at /swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -88,3 +98,4 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
