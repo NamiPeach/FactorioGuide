@@ -1,27 +1,17 @@
-﻿using Factorio.Domain.Entities;
-using Factorio.Infrastructure.Data;
+﻿using Factorio.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ServerApp.Models;
 
 namespace ServerApp.Controllers;
 
-/// <summary>Admin CRUD for registered users.</summary>
+/// <summary>Admin CRUD for registered users. All logic lives in UserService.</summary>
 [Authorize(Roles = "Admin")]
-public class UsersController : Controller
+public class UsersController(UserService users) : Controller
 {
-    private readonly AppDbContext _db;
-
-    public UsersController(AppDbContext db)
-    {
-        _db = db;
-    }
-
     public async Task<IActionResult> Index()
     {
-        var users = await _db.Users.AsNoTracking().OrderBy(u => u.Name).ToListAsync();
-        return View(users);
+        return View(await users.GetAllAsync());
     }
 
     public IActionResult Create()
@@ -32,30 +22,21 @@ public class UsersController : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(UserFormModel model)
     {
-        if (string.IsNullOrWhiteSpace(model.Password))
-            ModelState.AddModelError(nameof(model.Password), "Password is required.");
-
-        var email = model.Email.Trim().ToLower();
-        if (ModelState.IsValid && await _db.Users.AnyAsync(u => u.Email.ToLower() == email))
-            ModelState.AddModelError(nameof(model.Email), "A user with this email already exists.");
-
         if (!ModelState.IsValid)
             return View(model);
 
-        _db.Users.Add(new User
+        var result = await users.CreateAsync(model.Name, model.Email, model.Password);
+        if (!result.Succeeded)
         {
-            Name = model.Name.Trim(),
-            Email = email,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password),
-            CreatedAt = DateTime.UtcNow
-        });
-        await _db.SaveChangesAsync();
+            ModelState.AddModelError(result.Field ?? string.Empty, result.Error!);
+            return View(model);
+        }
         return RedirectToAction(nameof(Index));
     }
 
     public async Task<IActionResult> Edit(int id)
     {
-        var user = await _db.Users.FindAsync(id);
+        var user = await users.GetAsync(id);
         if (user is null) return NotFound();
 
         return View(new UserFormModel { Id = user.Id, Name = user.Name, Email = user.Email });
@@ -65,29 +46,22 @@ public class UsersController : Controller
     public async Task<IActionResult> Edit(int id, UserFormModel model)
     {
         if (id != model.Id) return BadRequest();
-
-        var user = await _db.Users.FindAsync(id);
-        if (user is null) return NotFound();
-
-        var email = model.Email.Trim().ToLower();
-        if (ModelState.IsValid && await _db.Users.AnyAsync(u => u.Id != id && u.Email.ToLower() == email))
-            ModelState.AddModelError(nameof(model.Email), "A user with this email already exists.");
-
         if (!ModelState.IsValid)
             return View(model);
 
-        user.Name = model.Name.Trim();
-        user.Email = email;
-        if (!string.IsNullOrWhiteSpace(model.Password))
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password);
-
-        await _db.SaveChangesAsync();
+        var result = await users.UpdateAsync(id, model.Name, model.Email, model.Password);
+        if (result.IsNotFound) return NotFound();
+        if (!result.Succeeded)
+        {
+            ModelState.AddModelError(result.Field ?? string.Empty, result.Error!);
+            return View(model);
+        }
         return RedirectToAction(nameof(Index));
     }
 
     public async Task<IActionResult> Delete(int id)
     {
-        var user = await _db.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
+        var user = await users.GetAsync(id);
         if (user is null) return NotFound();
 
         return View(user);
@@ -96,12 +70,7 @@ public class UsersController : Controller
     [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        var user = await _db.Users.FindAsync(id);
-        if (user is not null)
-        {
-            _db.Users.Remove(user);
-            await _db.SaveChangesAsync();
-        }
+        await users.DeleteAsync(id);
         return RedirectToAction(nameof(Index));
     }
 }

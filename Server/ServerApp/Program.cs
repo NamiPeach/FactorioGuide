@@ -1,3 +1,4 @@
+﻿using Factorio.Application.Services;
 using System.Text;
 using Factorio.Infrastructure;
 using Factorio.Infrastructure.Authentication;
@@ -11,6 +12,9 @@ var connectionString = builder.Configuration.GetConnectionString("Default")
     ?? throw new InvalidOperationException("Connection string 'Default' was not found in appsettings.json.");
 
 builder.Services.AddInfrastructure(connectionString);
+
+// Application layer: use cases
+builder.Services.AddScoped<UserService>();
 
 // JWT settings: Key, Issuer, Audience
 var jwtSection = builder.Configuration.GetSection(JwtSettings.SectionName);

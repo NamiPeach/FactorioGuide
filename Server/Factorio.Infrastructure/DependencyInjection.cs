@@ -1,6 +1,7 @@
-using Factorio.Application.Abstractions;
+﻿using Factorio.Application.Abstractions;
 using Factorio.Infrastructure.Authentication;
 using Factorio.Infrastructure.Data;
+using Factorio.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,8 +14,10 @@ public static class DependencyInjection
     {
         services.AddDbContext<AppDbContext>(options => options.UseSqlite(connectionString));
 
-        // Port -> adapter: the rest of the app asks for IJwtTokenService and gets JwtTokenService
+        // Port -> adapter: the rest of the app asks for an interface and gets the implementation
         services.AddSingleton<IJwtTokenService, JwtTokenService>();
+        services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
+        services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
     }
