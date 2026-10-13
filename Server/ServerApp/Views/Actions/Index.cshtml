@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Factorio.Domain.Entities.UserAction>
+@using Factorio.Domain.Enums
+@{
+    ViewData["Title"] = "Actions";
+    var current = ViewData["Status"] as ActionStatus?;
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Actions</h1>
+    <a asp-action="Create" class="btn btn-primary">Create action</a>
+</div>
+
+@if (TempData["Error"] is string error)
+{
+    <div class="alert alert-danger">@error</div>
+}
+
+<div class="mb-3">
+    <a asp-action="Index" class="btn btn-sm @(current is null ? "btn-primary" : "btn-outline-secondary")">All</a>
+    <a asp-action="Index" asp-route-status="Pending" class="btn btn-sm @(current == ActionStatus.Pending ? "btn-primary" : "btn-outline-secondary")">Pending</a>
+    <a asp-action="Index" asp-route-status="Approved" class="btn btn-sm @(current == ActionStatus.Approved ? "btn-primary" : "btn-outline-secondary")">Approved</a>
+    <a asp-action="Index" asp-route-status="Rejected" class="btn btn-sm @(current == ActionStatus.Rejected ? "btn-primary" : "btn-outline-secondary")">Rejected</a>
+</div>
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>User</th>
+            <th>Item</th>
+            <th>Type</th>
+            <th>Proposed description</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var a in Model)
+    {
+        <tr>
+            <td>@a.Id</td>
+            <td>@(a.User?.Name ?? "-")</td>
+            <td>@(a.Item?.Name ?? "-")</td>
+            <td>@a.Type</td>
+            <td>@(a.ActionDetails is { Length: > 60 } d ? d.Substring(0, 60) + "..." : a.ActionDetails)</td>
+            <td><span class="badge @(a.Status == ActionStatus.Pending ? "bg-warning text-dark" : a.Status == ActionStatus.Approved ? "bg-success" : "bg-danger")">@a.Status</span></td>
+            <td>@a.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+            <td class="text-end">
+                <a asp-action="Details" asp-route-id="@a.Id" class="btn btn-sm btn-outline-primary">Review</a>
+                @if (a.Status == ActionStatus.Pending)
+                {
+                    <a asp-action="Edit" asp-route-id="@a.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                }
+                <a asp-action="Delete" asp-route-id="@a.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+<p class="text-muted">Total: @Model.Count()</p>

@@ -19,6 +19,7 @@ builder.Services.AddInfrastructure(connectionString);
 // Application layer: use cases
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ItemService>();
+builder.Services.AddScoped<ActionService>();
 
 // JWT settings: Key, Issuer, Audience
 var jwtSection = builder.Configuration.GetSection(JwtSettings.SectionName);

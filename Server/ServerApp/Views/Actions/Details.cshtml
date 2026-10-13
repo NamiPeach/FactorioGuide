@@ -1,0 +1,44 @@
+﻿@model Factorio.Domain.Entities.UserAction
+@using Factorio.Domain.Enums
+@{
+    ViewData["Title"] = "Review action";
+}
+<h1 class="h3 mb-3">Action #@Model.Id</h1>
+
+@if (TempData["Error"] is string error)
+{
+    <div class="alert alert-danger">@error</div>
+}
+
+<dl class="row">
+    <dt class="col-sm-3">User</dt>
+    <dd class="col-sm-9">@Model.User?.Name (@Model.User?.Email)</dd>
+    <dt class="col-sm-3">Item</dt>
+    <dd class="col-sm-9">@Model.Item?.Name (<code>@Model.Item?.InternalName</code>)</dd>
+    <dt class="col-sm-3">Type</dt>
+    <dd class="col-sm-9">@Model.Type</dd>
+    <dt class="col-sm-3">Status</dt>
+    <dd class="col-sm-9">@Model.Status</dd>
+    <dt class="col-sm-3">Created</dt>
+    <dd class="col-sm-9">@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</dd>
+    <dt class="col-sm-3">Current description</dt>
+    <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.Item?.Description) ? "-" : Model.Item!.Description)</dd>
+    <dt class="col-sm-3">Proposed description</dt>
+    <dd class="col-sm-9">@(Model.Type == ActionType.Delete ? "(delete the description)" : (Model.ActionDetails ?? "-"))</dd>
+    <dt class="col-sm-3">Admin comment</dt>
+    <dd class="col-sm-9">@(Model.AdminComment ?? "-")</dd>
+</dl>
+
+@if (Model.Status == ActionStatus.Pending)
+{
+    <form asp-action="Approve" asp-route-id="@Model.Id" method="post" class="mb-3">
+        <textarea name="comment" rows="2" class="form-control mb-2" placeholder="Admin comment (required when rejecting)"></textarea>
+        <button type="submit" class="btn btn-success">Approve</button>
+        <button type="submit" asp-action="Reject" asp-route-id="@Model.Id" class="btn btn-danger">Reject</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Back</a>
+    </form>
+}
+else
+{
+    <a asp-action="Index" class="btn btn-outline-secondary">Back</a>
+}

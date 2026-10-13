@@ -1,0 +1,11 @@
+﻿@model ActionFormModel
+@{
+    ViewData["Title"] = "Edit action";
+}
+<h1 class="h3 mb-3">Edit action</h1>
+
+<form asp-action="Edit" method="post">
+    <partial name="_ActionForm" model="Model" />
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+</form>
