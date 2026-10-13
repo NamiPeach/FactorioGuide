@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ClientApp.ViewModels"
+             xmlns:models="clr-namespace:ClientApp.Models"
+             x:Class="ClientApp.Views.ItemsPage"
+             x:DataType="vm:ItemsViewModel"
+             Title="Items">
+    <Grid RowDefinitions="Auto,Auto,Auto,*" Padding="16" RowSpacing="8">
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+            <SearchBar Grid.Column="0" Placeholder="Search items" Text="{Binding SearchText}" />
+            <Button Grid.Column="1" Text="Refresh" Command="{Binding RefreshCommand}" />
+            <Button Grid.Column="2" Text="Logout" Command="{Binding LogoutCommand}" />
+        </Grid>
+
+        <ActivityIndicator Grid.Row="1" IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+        <Label Grid.Row="2" Text="{Binding ErrorMessage}" TextColor="Red" IsVisible="{Binding HasError}" />
+
+        <CollectionView Grid.Row="3" ItemsSource="{Binding Items}" SelectionMode="None">
+            <CollectionView.EmptyView>
+                <Label Text="No items" HorizontalOptions="Center" Margin="0,24" />
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:ItemModel">
+                    <Border Padding="12" Margin="0,4" Stroke="LightGray" StrokeShape="RoundRectangle 8">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="16" />
+                            <Label Text="{Binding InternalName}" FontSize="12" TextColor="Gray" />
+                            <Label Text="{Binding Category}" FontSize="12" />
+                            <Label Text="{Binding Description}" MaxLines="3" LineBreakMode="TailTruncation" />
+                            <Button Text="Propose change"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ItemsViewModel}}, Path=ProposeChangeCommand}"
+                                    CommandParameter="{Binding .}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

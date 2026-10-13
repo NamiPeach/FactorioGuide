@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ClientApp.ViewModels"
+             x:Class="ClientApp.Views.LoginPage"
+             x:DataType="vm:LoginViewModel"
+             Title="Sign in">
+    <VerticalStackLayout Padding="24" Spacing="12" VerticalOptions="Center" MaximumWidthRequest="420">
+        <Label Text="FactorioGuide" FontSize="28" FontAttributes="Bold" HorizontalOptions="Center" />
+        <Label Text="Sign in with your account" HorizontalOptions="Center" />
+
+        <Entry Placeholder="Email" Keyboard="Email" Text="{Binding Email}" />
+        <Entry Placeholder="Password" IsPassword="True" Text="{Binding Password}" />
+
+        <Label Text="{Binding ErrorMessage}" TextColor="Red" IsVisible="{Binding HasError}" />
+
+        <Button Text="Sign in" Command="{Binding LoginCommand}" IsEnabled="{Binding IsNotBusy}" />
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+    </VerticalStackLayout>
+</ContentPage>

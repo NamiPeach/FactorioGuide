@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ClientApp.ViewModels"
+             x:Class="ClientApp.Views.ActionPage"
+             x:DataType="vm:ActionViewModel"
+             Title="New request">
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="12">
+            <Label Text="Item" FontSize="12" TextColor="Gray" />
+            <Label Text="{Binding ItemName}" FontSize="20" FontAttributes="Bold" />
+
+            <Label Text="Request type" />
+            <Picker ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}" />
+
+            <Label Text="Proposed description" IsVisible="{Binding NeedsDetails}" />
+            <Editor Text="{Binding Details}" HeightRequest="160" Placeholder="Describe the change"
+                    IsVisible="{Binding NeedsDetails}" />
+
+            <Label Text="{Binding ErrorMessage}" TextColor="Red" IsVisible="{Binding HasError}" />
+
+            <Button Text="Send request" Command="{Binding SubmitCommand}" IsEnabled="{Binding IsNotBusy}" />
+            <Button Text="Cancel" Command="{Binding CancelCommand}" />
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
