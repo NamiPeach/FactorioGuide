@@ -1,0 +1,12 @@
+﻿@model UserFormModel
+@{
+    ViewData["Title"] = "Create user";
+    ViewData["PasswordHint"] = "At least 6 characters.";
+}
+<h1 class="h3 mb-3">Create user</h1>
+
+<form asp-action="Create" method="post" style="max-width: 480px;">
+    <partial name="_UserForm" model="Model" />
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-link">Cancel</a>
+</form>

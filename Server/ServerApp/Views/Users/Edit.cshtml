@@ -1,0 +1,12 @@
+﻿@model UserFormModel
+@{
+    ViewData["Title"] = "Edit user";
+    ViewData["PasswordHint"] = "Leave empty to keep the current password.";
+}
+<h1 class="h3 mb-3">Edit user</h1>
+
+<form asp-action="Edit" asp-route-id="@Model.Id" method="post" style="max-width: 480px;">
+    <partial name="_UserForm" model="Model" />
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-link">Cancel</a>
+</form>
