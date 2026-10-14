@@ -1,11 +1,11 @@
--- FactorioGuide: database schema and test data (SQLite)
+﻿-- FactorioGuide: database schema and test data (SQLite)
 PRAGMA foreign_keys = ON;
 
 -- Users of the MAUI app (the single admin is defined in code)
 CREATE TABLE Users (
     Id           INTEGER PRIMARY KEY AUTOINCREMENT,
     Name         TEXT NOT NULL,
-    Email        TEXT NOT NULL UNIQUE,
+    Email        TEXT NOT NULL,
     PasswordHash TEXT NOT NULL,
     CreatedAt    TEXT NOT NULL DEFAULT (datetime('now'))
 );
@@ -13,7 +13,7 @@ CREATE TABLE Users (
 -- Factorio items and buildings. UserId = user whose description edit was approved last (NULL for imported items)
 CREATE TABLE Items (
     Id            INTEGER PRIMARY KEY AUTOINCREMENT,
-    InternalName  TEXT NOT NULL UNIQUE,
+    InternalName  TEXT NOT NULL,
     Name          TEXT NOT NULL,
     Category      TEXT,
     Description   TEXT,
@@ -83,3 +83,14 @@ INSERT INTO Actions (UserId, ItemId, Type, ActionDetails, Status, AdminComment) 
 
 INSERT INTO Blueprints (Title, Description, BlueprintString, AuthorId) VALUES
     ('Sample blueprint', 'Placeholder entry for testing', 'SAMPLE-BLUEPRINT-STRING', 1);
+
+
+-- Indexes (names match the ones created by EF Core migrations)
+CREATE UNIQUE INDEX IX_Users_Email ON Users(Email);
+CREATE UNIQUE INDEX IX_Items_InternalName ON Items(InternalName);
+CREATE INDEX IX_Items_UserId ON Items(UserId);
+CREATE INDEX IX_Actions_UserId ON Actions(UserId);
+CREATE INDEX IX_Actions_ItemId ON Actions(ItemId);
+CREATE INDEX IX_RecipeIngredients_ItemId ON RecipeIngredients(ItemId);
+CREATE INDEX IX_RecipeIngredients_IngredientItemId ON RecipeIngredients(IngredientItemId);
+CREATE INDEX IX_Blueprints_AuthorId ON Blueprints(AuthorId);

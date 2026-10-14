@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace ClientApp.ViewModels;
 
+/// <summary>Form to propose a change to an item description: sends the request to the API.</summary>
 public partial class ActionViewModel(IApiService api, INavigationService navigation)
     : ViewModelBase, IQueryAttributable
 {
@@ -77,3 +78,4 @@ public partial class ActionViewModel(IApiService api, INavigationService navigat
     [RelayCommand]
     private Task CancelAsync() => navigation.GoToAsync("..");
 }
+

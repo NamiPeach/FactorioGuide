@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace ClientApp.ViewModels;
 
+/// <summary>Login screen: sends the email and password to the API and, on success, opens the items list.</summary>
 public partial class LoginViewModel(IApiService api, INavigationService navigation) : ViewModelBase
 {
     [ObservableProperty] private string email = string.Empty;
@@ -52,3 +53,4 @@ public partial class LoginViewModel(IApiService api, INavigationService navigati
         }
     }
 }
+

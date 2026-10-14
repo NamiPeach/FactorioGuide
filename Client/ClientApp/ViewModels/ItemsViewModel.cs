@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace ClientApp.ViewModels;
 
+/// <summary>Items screen: loads the list from the API once (cached), filters it by the search text, opens the proposal form and logs out.</summary>
 public partial class ItemsViewModel(IApiService api, INavigationService navigation) : ViewModelBase
 {
     // Cache: the list is loaded once and reused until the user presses Refresh
@@ -72,3 +73,4 @@ public partial class ItemsViewModel(IApiService api, INavigationService navigati
         foreach (var item in source) Items.Add(item);
     }
 }
+
