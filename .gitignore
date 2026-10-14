@@ -372,3 +372,5 @@ ClientApp/android/
 *.db
 *.db-shm
 *.db-wal
+
+desktop.ini
